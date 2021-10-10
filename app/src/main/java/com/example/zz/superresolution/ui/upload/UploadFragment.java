@@ -1,4 +1,4 @@
-package com.example.zz.superresolution.ui.home;
+package com.example.zz.superresolution.ui.upload;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,23 +11,23 @@ import android.support.v4.app.Fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import com.example.zz.superresolution.R;
-import com.example.zz.superresolution.databinding.FragmentHomeBinding;
+import com.example.zz.superresolution.databinding.FragmentUploadBinding;
 
-public class HomeFragment extends Fragment {
+public class UploadFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-private FragmentHomeBinding binding;
+    private UploadViewModel uploadViewModel;
+private FragmentUploadBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
             ViewGroup container, Bundle savedInstanceState) {
-        homeViewModel =
-                new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(HomeViewModel.class);
+        uploadViewModel =
+                new ViewModelProvider(this, new ViewModelProvider.NewInstanceFactory()).get(UploadViewModel.class);
 
-    binding = FragmentHomeBinding.inflate(inflater, container, false);
+    binding = FragmentUploadBinding.inflate(inflater, container, false);
     View root = binding.getRoot();
 
-//        final TextView textView = binding.textHome;
-//        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
+//        final TextView textView = binding.textUpload;
+//        uploadViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
 //            public void onChanged(@Nullable String s) {
 //                textView.setText(s);

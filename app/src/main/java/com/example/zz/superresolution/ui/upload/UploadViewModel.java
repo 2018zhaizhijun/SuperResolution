@@ -1,14 +1,14 @@
-package com.example.zz.superresolution.ui.dashboard;
+package com.example.zz.superresolution.ui.upload;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
-public class DashboardViewModel extends ViewModel {
+public class UploadViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public DashboardViewModel() {
+    public UploadViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is dashboard fragment");
     }

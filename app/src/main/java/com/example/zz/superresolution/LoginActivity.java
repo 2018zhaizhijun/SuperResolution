@@ -3,6 +3,7 @@ package com.example.zz.superresolution;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
@@ -49,7 +50,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
+            "abcd:1234"
     };
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -187,12 +188,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     private boolean isEmailValid(String email) {
         //TODO: Replace this with your own logic
-        return email.contains("@");
+        //return email.contains("@");
+        return email.length() >= 3;
     }
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() >= 3;
     }
 
     /**
@@ -293,6 +295,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         private final String mEmail;
         private final String mPassword;
+        private Boolean success=false;
 
         UserLoginTask(String email, String password) {
             mEmail = email;
@@ -314,11 +317,16 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                    //return pieces[1].equals(mPassword);
+                    if(!pieces[1].equals(mPassword))
+                        return false;
                 }
             }
 
             // TODO: register the new account here.
+            //return true;
+
+            startActivity(new Intent(LoginActivity.this,NavigationActivity.class));
             return true;
         }
 
