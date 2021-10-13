@@ -29,8 +29,8 @@
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/email_login_form"
-            android:layout_width="384dp"
-            android:layout_height="744dp"
+            android:layout_width="377dp"
+            android:layout_height="697dp"
             android:layout_marginLeft="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -63,8 +63,8 @@
                 android:layout_marginTop="470dp"
                 android:baselineAligned="false"
                 android:text="@string/action_sign_in"
-                android:textStyle="bold"
                 android:textAllCaps="false"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
