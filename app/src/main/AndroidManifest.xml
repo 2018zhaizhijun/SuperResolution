@@ -37,7 +37,7 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"></activity>
     </application>
-    
+
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
