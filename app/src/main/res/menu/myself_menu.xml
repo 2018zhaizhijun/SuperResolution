@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:id="@+id/mmg1" android:checkableBehavior="single">
+        <item
+            android:id="@+id/history"
+            android:icon="@drawable/history"
+            android:title="History"/>
+
+        <item
+            android:id="@+id/vip"
+            android:icon="@drawable/vip"
+            android:title="VIP"/>
+
+        <item
+            android:id="@+id/wallet"
+            android:icon="@drawable/wallet"
+            android:title="Wallet"/>
+    </group>
+
+    <group android:id="@+id/mmg2" android:checkableBehavior="single">
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/settings"
+            android:title="Settings"/>
+
+        <item
+            android:id="@+id/service"
+            android:icon="@drawable/service"
+            android:title="Service"/>
+    </group>
+
+</menu>
