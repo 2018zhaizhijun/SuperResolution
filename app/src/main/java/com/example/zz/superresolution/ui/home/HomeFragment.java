@@ -1,5 +1,6 @@
 package com.example.zz.superresolution.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.widget.Toast;
 
+import com.example.zz.superresolution.HistoryActivity;
 import com.example.zz.superresolution.R;
 import com.example.zz.superresolution.databinding.FragmentHomeBinding;
 
@@ -35,7 +37,9 @@ private FragmentHomeBinding binding;
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.history:
-                        Toast.makeText(getContext(), "You clicked history button", Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getContext(), HistoryActivity.class);
+                        startActivity(intent);
+                        //Toast.makeText(getContext(), "You clicked history button", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.vip:
                         Toast.makeText(getContext(), "You clicked vip button", Toast.LENGTH_LONG).show();
