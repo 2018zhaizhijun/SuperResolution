@@ -1,7 +1,9 @@
 package com.example.zz.superresolution.ui.home;
 
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -10,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
+import android.widget.Toast;
+
 import com.example.zz.superresolution.R;
 import com.example.zz.superresolution.databinding.FragmentHomeBinding;
 
@@ -25,7 +29,32 @@ private FragmentHomeBinding binding;
 
     binding = FragmentHomeBinding.inflate(inflater, container, false);
     View root = binding.getRoot();
-
+        NavigationView myselfView = (NavigationView) root.findViewById(R.id.myself_view);
+        myselfView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.history:
+                        Toast.makeText(getContext(), "You clicked history button", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.vip:
+                        Toast.makeText(getContext(), "You clicked vip button", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.wallet:
+                        Toast.makeText(getContext(), "You clicked wallet button", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.settings:
+                        Toast.makeText(getContext(), "You clicked settings button", Toast.LENGTH_LONG).show();
+                        break;
+                    case R.id.service:
+                        Toast.makeText(getContext(), "You clicked service button", Toast.LENGTH_LONG).show();
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
 //        final TextView textView = binding.textHome;
 //        homeViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
 //            @Override
