@@ -1,0 +1,6 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--圆角的弧度-->
+    <corners android:radius="30dp"/>
+    <!--按钮的颜色-->
+    <solid android:color="#FDAD00"/>
+</shape>

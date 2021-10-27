@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.zz.superresolution.HistoryActivity;
 import com.example.zz.superresolution.R;
+import com.example.zz.superresolution.VIPActivity;
 import com.example.zz.superresolution.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -37,12 +38,14 @@ private FragmentHomeBinding binding;
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.history:
-                        Intent intent = new Intent(getContext(), HistoryActivity.class);
-                        startActivity(intent);
+                        Intent intent1 = new Intent(getContext(), HistoryActivity.class);
+                        startActivity(intent1);
                         //Toast.makeText(getContext(), "You clicked history button", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.vip:
-                        Toast.makeText(getContext(), "You clicked vip button", Toast.LENGTH_LONG).show();
+                        Intent intent2 = new Intent(getContext(), VIPActivity.class);
+                        startActivity(intent2);
+//                        Toast.makeText(getContext(), "You clicked vip button", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.wallet:
                         Toast.makeText(getContext(), "You clicked wallet button", Toast.LENGTH_LONG).show();

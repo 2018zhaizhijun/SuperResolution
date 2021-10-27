@@ -5,19 +5,26 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Username</string>
     <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">登录 / 注册</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_invalid_email">邮箱地址错误，请重新输入</string>
+    <string name="error_invalid_password">密码太短，请重新输入</string>
+    <string name="error_incorrect_password">密码有误，请重新输入</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
     <string name="title_activity_navigation">NavigationActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_upload">Upload</string>
-    <string name="select_from_album">Select from album</string>
-    <string name="take_photo">Take photo</string>
-    <string name="my_history">My History</string>
+    <string name="title_home">我的</string>
+    <string name="title_upload">上传</string>
+    <string name="select_from_album">相册上传</string>
+    <string name="take_photo">拍照上传</string>
+    <string name="item_history">历史记录</string>
+    <string name="item_vip">会员中心</string>
+    <string name="item_wallet">我的钱包</string>
+    <string name="item_settings">设置</string>
+    <string name="item_service">反馈</string>
+    <string name="my_history">我的历史</string>
+    <string name="vip">会员中心</string>
+    <string name="get_vip">立即开通VIP</string>
 </resources>

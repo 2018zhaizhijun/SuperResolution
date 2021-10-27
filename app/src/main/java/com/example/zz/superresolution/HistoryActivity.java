@@ -26,6 +26,9 @@ public class HistoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        if(getSupportActionBar()!=null){
+            getSupportActionBar().hide();// 隐藏ActionBar
+        }
 
         initCards();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.history_rv);

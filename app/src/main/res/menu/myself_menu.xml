@@ -4,29 +4,29 @@
         <item
             android:id="@+id/history"
             android:icon="@drawable/history"
-            android:title="History"/>
+            android:title="@string/item_history"/>
 
         <item
             android:id="@+id/vip"
             android:icon="@drawable/vip"
-            android:title="VIP"/>
+            android:title="@string/item_vip"/>
 
         <item
             android:id="@+id/wallet"
             android:icon="@drawable/wallet"
-            android:title="Wallet"/>
+            android:title="@string/item_wallet"/>
     </group>
 
     <group android:id="@+id/mmg2" android:checkableBehavior="single">
         <item
             android:id="@+id/settings"
             android:icon="@drawable/settings"
-            android:title="Settings"/>
+            android:title="@string/item_settings"/>
 
         <item
             android:id="@+id/service"
             android:icon="@drawable/service"
-            android:title="Service"/>
+            android:title="@string/item_service"/>
     </group>
 
 </menu>
