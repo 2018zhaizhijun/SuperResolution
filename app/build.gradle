@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.mob.sdk'
 
 android {
     compileSdkVersion 28
@@ -19,6 +20,12 @@ android {
     buildFeatures {
         viewBinding true
     }
+}
+
+MobSDK {
+    appKey "349f7272485a8"
+    appSecret "3302a31df896659c443a0079575a81a3"
+    SMSSDK {}
 }
 
 dependencies {

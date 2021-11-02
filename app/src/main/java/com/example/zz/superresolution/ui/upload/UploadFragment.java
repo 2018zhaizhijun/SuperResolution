@@ -39,6 +39,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Random;
 
 public class UploadFragment extends Fragment {
 
@@ -76,8 +77,8 @@ public class UploadFragment extends Fragment {
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("clicked", "takePhoto button clicked");
-                File outputImage = new File(getActivity().getExternalCacheDir(), "output_image.jpg");
+                Random rand = new Random();
+                File outputImage = new File(getActivity().getExternalCacheDir(), "output_photo"+rand.nextInt(10000)+".jpg");
                 try {
                     if (outputImage.exists()) {
                         outputImage.delete();
@@ -143,14 +144,14 @@ public class UploadFragment extends Fragment {
         switch (requestCode){
             case TAKE_PHOTO:
                 if(resultCode == FragmentActivity.RESULT_OK){
-                    try{
-                        Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(imageUri));
+                    //try{
+                        //Bitmap bitmap = BitmapFactory.decodeStream(getActivity().getContentResolver().openInputStream(imageUri));
                         //bitmap = translate(bitmap);
                         //photo.setImageBitmap(bitmap);
-                        toResultPage(bitmap);
-                    }catch (FileNotFoundException e){
-                        e.printStackTrace();
-                    }
+                    toResultPage(imageUri);
+//                    }catch (FileNotFoundException e){
+//                        e.printStackTrace();
+//                    }
                 }
                 break;
             case SELECT_PHOTO:
@@ -184,13 +185,13 @@ public class UploadFragment extends Fragment {
         }else if ("file".equalsIgnoreCase(uri.getScheme())){
             imagePath = uri.getPath();
         }
-        displayImage(imagePath);
+        displayImage(uri);
     }
 
     private void handleImageBeforeKitKat(Intent data){
         Uri uri = data.getData();
-        String imagePath = getImagePath(uri, null);
-        displayImage(imagePath);
+        //String imagePath = getImagePath(uri, null);
+        displayImage(uri);
     }
 
     private String getImagePath(Uri uri, String selection){
@@ -205,25 +206,26 @@ public class UploadFragment extends Fragment {
         return path;
     }
 
-    private void displayImage(String imagePath){
-        if (imagePath != null){
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+    private void displayImage(Uri imgUri){
+        if (imgUri != null){
+//            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
 //            bitmap = translate(bitmap);
 //            photo.setImageBitmap(bitmap);
-            toResultPage(bitmap);
+            toResultPage(imgUri);
         }else {
             Toast.makeText(getActivity(), "Failed to get the image", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void toResultPage(Bitmap image){
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    private void toResultPage(Uri imageUri){
+        //ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         //压缩图像，quality值越小压缩率越大，100表示不压缩
-        image.compress(Bitmap.CompressFormat.PNG,100,bytes);
-        byte[] byteArray = bytes.toByteArray();
+//        image.compress(Bitmap.CompressFormat.PNG,100,bytes);
+//        byte[] byteArray = bytes.toByteArray();
 
         Intent intent = new Intent(getActivity(), ResultActivity.class);
-        intent.putExtra("processed_imagebytes", byteArray);
+        //intent.putExtra("processed_imagebytes", imageUri);
+        intent.setData(imageUri);
         startActivity(intent);
     }
 

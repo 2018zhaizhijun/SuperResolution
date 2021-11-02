@@ -31,16 +31,14 @@
             android:id="@+id/email_login_form"
             android:layout_width="377dp"
             android:layout_height="697dp"
-            android:layout_marginLeft="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.863"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toTopOf="parent">
 
             <AutoCompleteTextView
-                android:id="@+id/email"
+                android:id="@+id/telephone"
                 android:layout_width="229dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="307dp"
@@ -56,7 +54,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/sign_in_button"
                 style="@style/Widget.AppCompat.Button.Small"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
@@ -64,17 +62,30 @@
                 android:baselineAligned="false"
                 android:text="@string/action_sign_in"
                 android:textAllCaps="false"
-                android:textStyle="bold"
                 android:textSize="15sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.502"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <Button
+                android:id="@+id/sendcode_button"
+                android:layout_width="93dp"
+                android:layout_height="53dp"
+                android:layout_marginLeft="216dp"
+                android:layout_marginStart="216dp"
+                android:layout_marginTop="364dp"
+                android:text="@string/action_send"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <EditText
-                android:id="@+id/password"
-                android:layout_width="231dp"
-                android:layout_height="wrap_content"
+                android:id="@+id/inputcode"
+                android:layout_width="129dp"
+                android:layout_height="49dp"
+                android:layout_marginLeft="74dp"
+                android:layout_marginStart="74dp"
                 android:layout_marginTop="368dp"
                 android:baselineAligned="false"
                 android:hint="@string/prompt_password"
@@ -85,8 +96,6 @@
                 android:maxLines="1"
                 android:minHeight="48dp"
                 android:singleLine="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.503"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 

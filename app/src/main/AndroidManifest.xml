@@ -7,6 +7,15 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />				//获取读取联系人的权限
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />			//获取读取电话的权限说明
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />	//获取写入存储的权限
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />		//获取进去网络的权限说明
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />			//获取Wifi的权限说明
+    <uses-permission android:name="android.permission.INTERNET" />					//获取网络的权限
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />				//获取SMS的权限
+    <uses-permission android:name="android.permission.GET_TASKS" />					//获取资源的访问或者网络连接的权限
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />		//获取定位的权限
 
     <application
         android:allowBackup="true"
