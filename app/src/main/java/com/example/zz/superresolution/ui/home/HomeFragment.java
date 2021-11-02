@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.zz.superresolution.HistoryActivity;
 import com.example.zz.superresolution.R;
 import com.example.zz.superresolution.VIPActivity;
+import com.example.zz.superresolution.WalletActivity;
 import com.example.zz.superresolution.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -48,7 +49,9 @@ private FragmentHomeBinding binding;
 //                        Toast.makeText(getContext(), "You clicked vip button", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.wallet:
-                        Toast.makeText(getContext(), "You clicked wallet button", Toast.LENGTH_LONG).show();
+                        Intent intent3 = new Intent(getContext(), WalletActivity.class);
+                        startActivity(intent3);
+//                        Toast.makeText(getContext(), "You clicked wallet button", Toast.LENGTH_LONG).show();
                         break;
                     case R.id.settings:
                         Toast.makeText(getContext(), "You clicked settings button", Toast.LENGTH_LONG).show();

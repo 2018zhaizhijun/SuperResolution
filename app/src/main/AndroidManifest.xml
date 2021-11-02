@@ -18,6 +18,9 @@
         android:theme="@style/Theme.AppCompat"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".WalletActivity"
+            android:exported="false" />
+        <activity
             android:name=".VIPActivity"
             android:exported="false" />
         <activity
