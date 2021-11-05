@@ -58,13 +58,6 @@ public class UploadFragment extends Fragment {
         binding = FragmentUploadBinding.inflate(inflater, container, false);
         root = binding.getRoot();
 
-//        final TextView textView = binding.textUpload;
-//        uploadViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         return root;
     }
 

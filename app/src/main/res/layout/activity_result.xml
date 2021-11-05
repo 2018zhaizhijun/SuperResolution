@@ -9,9 +9,8 @@
 
     <ImageView
         android:id="@+id/photo"
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        app:srcCompat="@drawable/ic_launcher_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         tools:layout_editor_absoluteX="1dp"
         tools:layout_editor_absoluteY="1dp" />
 </android.support.constraint.ConstraintLayout>

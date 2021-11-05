@@ -12,8 +12,11 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -26,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import cn.smssdk.SMSSDK;
@@ -43,7 +47,10 @@ public class ResultActivity extends AppCompatActivity {
 
     private String url = "http://101.35.24.184:9008/upload/image/single";
     private byte[] SR_img=null;
+    private Uri SR_Uri;
     ImageView photo;
+    ProgressBar mProBar;
+    FrameLayout layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,35 +78,47 @@ public class ResultActivity extends AppCompatActivity {
 
         //Glide.with(this).load(imgUri).into(photo);
 
+        createProgressBar();
         UploadAndShowImage(this, imgBytes);
 
-        photo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
-                builder.setItems(new String[]{getResources().getString(R.string.save_picture)}, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        //photo.setDrawingCacheEnabled(true);
-                        //Bitmap imageBitmap = photo.getDrawingCache();
-                        //try {
-                        //Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imgUri));
-                        Bitmap imageBitmap = BitmapFactory.decodeByteArray(SR_img, 0, SR_img.length);
-                        if (imageBitmap != null) {
-                            saveImageToGallery(ResultActivity.this, imageBitmap);
-                        }
-                        //photo.setDrawingCacheEnabled(false);
-                        imageBitmap.recycle();
-                        System.gc();
-                        //}catch (FileNotFoundException e){
-                        //    e.printStackTrace();
-                        //}
-                    }
-                });
-                builder.show();
-                return true;
-            }
-        });
+//        UploadAndShowImage(this, imgBytes, new MyCallback(){
+//            @Override
+//            public void onSuccess(byte[] resposeBody){
+//                SR_img = resposeBody;
+//                Bitmap imageBitmap = BitmapFactory.decodeByteArray(SR_img, 0, SR_img.length);
+//                Uri imageUri = saveImageToGallery(ResultActivity.this, imageBitmap);
+//                //Glide.with(ResultActivity.this).load(imageUri).into(photo);
+//                SR_Uri = imageUri;
+//            }
+//        });
+
+//        photo.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                AlertDialog.Builder builder = new AlertDialog.Builder(ResultActivity.this);
+//                builder.setItems(new String[]{getResources().getString(R.string.save_picture)}, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        //photo.setDrawingCacheEnabled(true);
+//                        //Bitmap imageBitmap = photo.getDrawingCache();
+//                        //try {
+//                        //Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imgUri));
+//                        Bitmap imageBitmap = BitmapFactory.decodeByteArray(SR_img, 0, SR_img.length);
+//                        if (imageBitmap != null) {
+//                            saveImageToGallery(ResultActivity.this, imageBitmap);
+//                        }
+//                        //photo.setDrawingCacheEnabled(false);
+//                        imageBitmap.recycle();
+//                        System.gc();
+//                        //}catch (FileNotFoundException e){
+//                        //    e.printStackTrace();
+//                        //}
+//                    }
+//                });
+//                builder.show();
+//                return true;
+//            }
+//        });
     }
 
     public Uri saveImageToGallery(Context context, Bitmap bmp) {
@@ -127,33 +146,32 @@ public class ResultActivity extends AppCompatActivity {
         //Log.d("222", "path:" + path);
         try {
             MediaStore.Images.Media.insertImage(context.getContentResolver(), path, fileName, null);
-            Toast.makeText(context,"successfully saved", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"图片已保存", Toast.LENGTH_SHORT).show();
+            Log.d("save", "SR_image inserted into gallery");
         } catch (FileNotFoundException e) {
             Log.e("save",e.getMessage());
             e.printStackTrace();
-            Toast.makeText(context,"failed to save", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context,"failed to save", Toast.LENGTH_SHORT).show();
         }
         // 最后通知图库更新
-//        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri uri = Uri.fromFile(file);
-//        intent.setData(uri);
-//        context.sendBroadcast(intent);
+        intent.setData(uri);
+        context.sendBroadcast(intent);
         return uri;
     }
 
     private void UploadAndShowImage(Context context, byte[] imgBytes){
-        OkHttpClient client = new OkHttpClient.Builder()
-//                .retryOnConnectionFailure(true)
-//                .connectTimeout(60L, TimeUnit.SECONDS) //连接超时
-//                .readTimeout(60L, TimeUnit.SECONDS) //读取超时
-//                .writeTimeout(60L, TimeUnit.SECONDS) //写超时
-                .build();
+        OkHttpClient client = new OkHttpClient.Builder().build();
         MediaType mediaType = MediaType.parse("image/jpeg");
-        RequestBody requestBody = RequestBody.create(mediaType,imgBytes);
+        RequestBody fileBody = RequestBody.create(mediaType,imgBytes);
+        String fileName = "SR_"+System.currentTimeMillis() + ".jpg";
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", fileName, fileBody)
+                .build();
 
         Request request = new Request.Builder()
-                //.addHeader("Connection", "close")
-                //.addHeader("Content-Type", "multipart/form-data;boundary=,")
                 .url(url)
                 .post(requestBody)
                 .build();
@@ -171,20 +189,34 @@ public class ResultActivity extends AppCompatActivity {
                 int code = response.code();
                 if(code == HttpURLConnection.HTTP_OK){
                     byte[] resposeBody = response.body().bytes();
-                    SR_img = resposeBody;
-                    Bitmap imageBitmap = BitmapFactory.decodeByteArray(SR_img, 0, SR_img.length);
-                    Uri imageUri = saveImageToGallery(ResultActivity.this, imageBitmap);
-
-                    //photo.setDrawingCacheEnabled(false);
-                    //imageBitmap.recycle();
-                    //System.gc();
-                    Glide.with(context).load(imageUri).into(photo);
+                    ResultActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            SR_img = resposeBody;
+                            Bitmap imageBitmap = BitmapFactory.decodeByteArray(SR_img, 0, SR_img.length);
+                            Uri imageUri = saveImageToGallery(ResultActivity.this, imageBitmap);
+                            Glide.with(context).load(imageUri).into(photo);
+                            layout.removeView(mProBar);
+                        }
+                    });
                 }
                 else{
-                    Toast.makeText(ResultActivity.this,"超分辨率转换失败", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(ResultActivity.this,"超分辨率转换失败", Toast.LENGTH_SHORT).show();
+                    Log.d("upload", "transform failed");
                 }
             }
         });
+    }
+
+    private void createProgressBar() {
+        layout = (FrameLayout) findViewById(android.R.id.content);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        mProBar = new ProgressBar(this);
+        mProBar.setLayoutParams(layoutParams);
+        mProBar.setVisibility(View.VISIBLE);
+        layout.addView(mProBar);
     }
 
     @Override
