@@ -3,7 +3,9 @@ package com.example.zz.superresolution;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.Message;
@@ -21,7 +23,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -37,6 +43,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,153 +52,93 @@ import static android.Manifest.permission.READ_CONTACTS;
 
 import com.mob.MobSDK;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, View.OnClickListener {
-
-    String APPKEY = "349f7272485a8";
-    String APPSECRETE = "3302a31df896659c443a0079575a81a3";
-    int timecnt = 30;
+public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
     /**
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
-    /**
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
-     */
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "abcd:1234"
-    };
+//    private static final String[] DUMMY_CREDENTIALS = new String[]{
+//            "18607339539", "011520"
+//    };
+
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    //private UserLoginTask mAuthTask = null;
+    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mTelephoneView;
-    private EditText mCodeView;
+    private EditText mPasswordView;
+    private TextView mToRegister;
     private View mProgressView;
     private View mLoginFormView;
-    private Button mSendcodeButton;
     private Button mSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        // 启动短信验证sdk
-        MobSDK.init(this, APPKEY, APPSECRETE);
-        EventHandler eventHandler = new EventHandler() {
-            @Override
-            public void afterEvent(int event, int result, Object data) {
-                Message msg = new Message();
-                msg.arg1 = event;
-                msg.arg2 = result;
-                msg.obj = data;
-                handler.sendMessage(msg);
-            }
-        };
-        //注册回调监听接口
-        SMSSDK.registerEventHandler(eventHandler);
-
         // Set up the login form.
         mTelephoneView = (AutoCompleteTextView) findViewById(R.id.telephone);
         populateAutoComplete();
 
-        mCodeView = (EditText) findViewById(R.id.inputcode);
+        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
+                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                    attemptLogin();
+                    return true;
+                }
+                return false;
+            }
+        });
 
-        mSendcodeButton = (Button) findViewById(R.id.sendcode_button);
-        mSendcodeButton.setOnClickListener(this);
+        Button mEmailSignInButton = (Button) findViewById(R.id.sign_in_button);
+        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptLogin();
+            }
+        });
 
-        mSignInButton = (Button) findViewById(R.id.sign_in_button);
-        mSignInButton.setOnClickListener(this);
+        mToRegister=(TextView)findViewById(R.id.to_register);
+        String textToRegister="立即注册";
+        SpannableString spannableStringToRegister=new SpannableString(textToRegister);
+
+        spannableStringToRegister.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(LoginActivity.this,RegisterActivity.class);
+                startActivity(intent);
+
+            }
+        }, 0, textToRegister.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mToRegister.setText(spannableStringToRegister);
+        mToRegister.setMovementMethod(LinkMovementMethod.getInstance());
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
-
-    @Override
-    public void onClick(View v) {
-        String phoneNums = mTelephoneView.getText().toString();
-        switch (v.getId()) {
-            case R.id.sendcode_button:
-                // 1. 通过规则判断手机号
-                if (!judgePhoneNums(phoneNums)) {
-                    return;
-                } // 2. 通过sdk发送短信验证
-                SMSSDK.getVerificationCode("86", phoneNums);
-
-                // 3. 把按钮变成不可点击，并且显示倒计时（正在获取）
-                mSendcodeButton.setClickable(false);
-                mSendcodeButton.setText("重新发送(" + timecnt + ")");
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (; timecnt > 0; timecnt--) {
-                            handler.sendEmptyMessage(-9);
-                            if (timecnt <= 0) {
-                                break;
-                            }
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        handler.sendEmptyMessage(-8);
-                    }
-                }).start();
-                break;
-
-            case R.id.sign_in_button:
-                //将收到的验证码和手机号提交再次核对
-                SMSSDK.submitVerificationCode("86", phoneNums, mCodeView
-                        .getText().toString());
-                createProgressBar();
-                break;
-        }
-    }
-
-    Handler handler = new Handler() {
-        public void handleMessage(Message msg) {
-            if (msg.what == -9) {
-                mSendcodeButton.setText("重新发送(" + timecnt + ")");
-            } else if (msg.what == -8) {
-                mSendcodeButton.setText("获取验证码");
-                mSendcodeButton.setClickable(true);
-                timecnt = 30;
-            } else {
-                int event = msg.arg1;
-                int result = msg.arg2;
-                Object data = msg.obj;
-                Log.e("event", "event=" + event);
-                if (result == SMSSDK.RESULT_COMPLETE) {
-                    // 短信登录成功后，跳转NavigationActivity,然后提示
-                    if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
-                        Toast.makeText(getApplicationContext(), "登录成功",
-                                Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this,
-                                NavigationActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
-                        Toast.makeText(getApplicationContext(), "正在获取验证码",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        ((Throwable) data).printStackTrace();
-                    }
-                }
-            }
-        }
-    };
 
     private boolean judgePhoneNums(String phoneNums) {
         if (isMatchLength(phoneNums, 11)
@@ -220,17 +168,6 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
             return false;
         else
             return mobileNums.matches(telRegex);
-    }
-
-    private void createProgressBar() {
-        FrameLayout layout = (FrameLayout) findViewById(android.R.id.content);
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        ProgressBar mProBar = new ProgressBar(this);
-        mProBar.setLayoutParams(layoutParams);
-        mProBar.setVisibility(View.VISIBLE);
-        layout.addView(mProBar);
     }
 
     @Override
@@ -278,104 +215,104 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
     }
 
 
-//    /**
-//     * Attempts to sign in or register the account specified by the login form.
-//     * If there are form errors (invalid email, missing fields, etc.), the
-//     * errors are presented and no actual login attempt is made.
-//     */
-//    private void attemptLogin() {
-//        if (mAuthTask != null) {
-//            return;
-//        }
-//
-//        // Reset errors.
-//        mTelephoneView.setError(null);
-//        mCodeView.setError(null);
-//
-//        // Store values at the time of the login attempt.
-//        String email = mTelephoneView.getText().toString();
-//        String password = mCodeView.getText().toString();
-//
-//        boolean cancel = false;
-//        View focusView = null;
-//
-//        // Check for a valid password, if the user entered one.
-//        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-//            mCodeView.setError(getString(R.string.error_invalid_password));
-//            focusView = mCodeView;
-//            cancel = true;
-//        }
-//
-//        // Check for a valid email address.
-//        if (TextUtils.isEmpty(email)) {
-//            mTelephoneView.setError(getString(R.string.error_field_required));
-//            focusView = mTelephoneView;
-//            cancel = true;
-//        } else if (!isEmailValid(email)) {
-//            mTelephoneView.setError(getString(R.string.error_invalid_email));
-//            focusView = mTelephoneView;
-//            cancel = true;
-//        }
-//
-//        if (cancel) {
-//            // There was an error; don't attempt login and focus the first
-//            // form field with an error.
-//            focusView.requestFocus();
-//        } else {
-//            // Show a progress spinner, and kick off a background task to
-//            // perform the user login attempt.
-//            showProgress(true);
-//            mAuthTask = new UserLoginTask(email, password);
-//            mAuthTask.execute((Void) null);
-//        }
-//    }
-//
+    /**
+     * Attempts to sign in or register the account specified by the login form.
+     * If there are form errors (invalid email, missing fields, etc.), the
+     * errors are presented and no actual login attempt is made.
+     */
+    private void attemptLogin() {
+        if (mAuthTask != null) {
+            return;
+        }
+
+        // Reset errors.
+        mTelephoneView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String telephone = mTelephoneView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(telephone)) {
+            mTelephoneView.setError(getString(R.string.error_field_required));
+            focusView = mTelephoneView;
+            cancel = true;
+        } else if (!judgePhoneNums(telephone)) {
+            mTelephoneView.setError(getString(R.string.error_invalid_email));
+            focusView = mTelephoneView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            // Show a progress spinner, and kick off a background task to
+            // perform the user login attempt.
+            showProgress(true);
+            mAuthTask = new UserLoginTask(telephone, password);
+            mAuthTask.execute((Void) null);
+        }
+    }
+
 //    private boolean isEmailValid(String email) {
 //        //TODO: Replace this with your own logic
 //        //return email.contains("@");
 //        return email.length() >= 3;
 //    }
-//
-//    private boolean isPasswordValid(String password) {
-//        //TODO: Replace this with your own logic
-//        return password.length() >= 3;
-//    }
-//
-//    /**
-//     * Shows the progress UI and hides the login form.
-//     */
-//    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-//    private void showProgress(final boolean show) {
-//        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-//        // for very easy animations. If available, use these APIs to fade-in
-//        // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-//            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-//
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//                }
-//            });
-//
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mProgressView.animate().setDuration(shortAnimTime).alpha(
-//                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-//                @Override
-//                public void onAnimationEnd(Animator animation) {
-//                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//                }
-//            });
-//        } else {
-//            // The ViewPropertyAnimator APIs are not available, so simply show
-//            // and hide the relevant UI components.
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
-//    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() >= 3;
+    }
+
+    /**
+     * Shows the progress UI and hides the login form.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                }
+            });
+
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mProgressView.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
@@ -431,68 +368,134 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>, 
         int IS_PRIMARY = 1;
     }
 
-//    /**
-//     * Represents an asynchronous login/registration task used to authenticate
-//     * the user.
-//     */
-//    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-//
-//        private final String mEmail;
-//        private final String mPassword;
-//        private Boolean success=false;
-//
-//        UserLoginTask(String email, String password) {
-//            mEmail = email;
-//            mPassword = password;
-//        }
-//
-//        @Override
-//        protected Boolean doInBackground(Void... params) {
-//            // TODO: attempt authentication against a network service.
-//
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mTelephone;
+        private final String mPassword;
+        private Boolean success=false;
+        final String PREFS_NAME = "userinfo";
+        String base_url = "http://101.35.24.184:9008/user/login/password";
+
+        UserLoginTask(String email, String password) {
+            mTelephone = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
 //            try {
 //                // Simulate network access.
 //                Thread.sleep(2000);
 //            } catch (InterruptedException e) {
 //                return false;
 //            }
-//
+
+
+            LogIn(LoginActivity.this);
 //            for (String credential : DUMMY_CREDENTIALS) {
 //                String[] pieces = credential.split(":");
-//                if (pieces[0].equals(mEmail)) {
+//                if (pieces[0].equals(mTelephone)) {
 //                    // Account exists, return true if the password matches.
 //                    //return pieces[1].equals(mPassword);
 //                    if(!pieces[1].equals(mPassword))
 //                        return false;
 //                }
 //            }
-//
-//            // TODO: register the new account here.
-//            //return true;
-//
+
+            // TODO: register the new account here.
+            //return true;
+
 //            startActivity(new Intent(LoginActivity.this,NavigationActivity.class));
 //            finish();
-//            return true;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(final Boolean success) {
-//            mAuthTask = null;
-//            showProgress(false);
-//
+            return false;
+        }
+
+        private void LogIn(Context context){
+            String password = mPasswordView.getText().toString();
+            String telephone = mTelephoneView.getText().toString();
+            String url = base_url+"?password="+password+"&telephone="+telephone;
+
+            Request request = new okhttp3.Request.Builder().url(url).get().build();
+            OkHttpClient okHttpClient = new OkHttpClient();
+            Call call = okHttpClient.newCall(request);
+
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("login", "onFailure: ");
+                    e.printStackTrace();
+                    showResult("登录失败");
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    Log.d("login", "onResponse: ");
+                    int code = response.code();
+                    if(code == HttpURLConnection.HTTP_OK){
+                        String resposeBody = response.body().string();
+                        try{
+                            JSONObject jsonObject=new JSONObject(resposeBody);
+                            Log.d("login", jsonObject.toString());
+                            String token=jsonObject.getJSONObject("data").getString("token");
+                            saveToken(token);
+                            showResult("登录成功");
+                            startActivity(new Intent(LoginActivity.this,NavigationActivity.class));
+                            finish();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    else{
+                        //Toast.makeText(ResultActivity.this,"超分辨率转换失败", Toast.LENGTH_SHORT).show();
+                        Log.d("login", "login failed");
+                        showResult("登录失败");
+                    }
+                }
+            });
+        }
+
+        private void saveToken(String token){
+            SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+            SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+            //得到Editor后，写入需要保存的数据
+            editor.putString("token", token);
+            editor.commit();//提交修改
+            Log.i("token:", token);
+        }
+
+        public void showResult(final String msg) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(LoginActivity.this,msg, Toast.LENGTH_SHORT).show();
+                    mPasswordView.requestFocus();
+                }
+            });
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
 //            if (success) {
 //                finish();
 //            } else {
-//                mCodeView.setError(getString(R.string.error_incorrect_password));
-//                mCodeView.requestFocus();
+//                mPasswordView.setError(getString(R.string.error_incorrect_password));
+//                mPasswordView.requestFocus();
 //            }
-//        }
-//
-//        @Override
-//        protected void onCancelled() {
-//            mAuthTask = null;
-//            showProgress(false);
-//        }
-//    }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
 }
 

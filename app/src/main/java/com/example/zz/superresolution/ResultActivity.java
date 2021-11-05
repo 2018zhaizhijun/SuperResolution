@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -48,6 +49,7 @@ public class ResultActivity extends AppCompatActivity {
     private String url = "http://101.35.24.184:9008/upload/image/single";
     private byte[] SR_img=null;
     private Uri SR_Uri;
+    final String PREFS_NAME = "userinfo";
     ImageView photo;
     ProgressBar mProBar;
     FrameLayout layout;
@@ -171,8 +173,11 @@ public class ResultActivity extends AppCompatActivity {
                 .addFormDataPart("image", fileName, fileBody)
                 .build();
 
+        String token = getToken();
+
         Request request = new Request.Builder()
                 .url(url)
+                .header("Cookie", "token="+token)
                 .post(requestBody)
                 .build();
         Call call = client.newCall(request);
@@ -217,6 +222,13 @@ public class ResultActivity extends AppCompatActivity {
         mProBar.setLayoutParams(layoutParams);
         mProBar.setVisibility(View.VISIBLE);
         layout.addView(mProBar);
+    }
+
+    private String getToken(){
+        SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = userInfo.getString("token", "");
+        Log.i("token", token);
+        return token;
     }
 
     @Override

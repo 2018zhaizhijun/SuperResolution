@@ -31,10 +31,10 @@
         tools:layout_editor_absoluteY="1dp">
 
         <AutoCompleteTextView
-            android:id="@+id/telephone"
+            android:id="@+id/telephone_register"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="308dp"
+            android:layout_marginTop="384dp"
             android:baselineAligned="false"
             android:hint="@string/prompt_email"
             android:inputType="textEmailAddress"
@@ -42,7 +42,7 @@
             android:minHeight="48dp"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,34 +51,38 @@
             style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="160dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="471dp"
+            android:layout_marginTop="536dp"
             android:baselineAligned="false"
-            android:text="@string/action_sign_in"
+            android:text="@string/action_register"
             android:textAllCaps="false"
             android:textSize="15sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_bias="0.494"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/password_register"
             android:layout_width="match_parent"
-            android:layout_height="49dp"
-            android:layout_marginTop="366dp"
-            android:layout_weight="2"
-            android:baselineAligned="false"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="327dp"
+            android:ems="10"
             android:hint="@string/prompt_password"
-            android:imeActionId="6"
-            android:imeActionLabel="@string/action_sign_in_short"
-            android:imeOptions="actionUnspecified"
             android:inputType="textPassword"
-            android:maxLines="1"
-            android:minHeight="48dp"
-            android:singleLine="true"
             app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="35dp" />
+            tools:layout_editor_absoluteX="1dp" />
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="269dp"
+            android:ems="10"
+            android:hint="@string/prompt_name"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="1dp" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -91,16 +95,39 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/to_register"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="527dp"
-            android:text="@string/action_to_register"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="12dp"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:weightSum="3"
+            app:layout_constraintTop_toBottomOf="@+id/telephone_register"
+            tools:layout_editor_absoluteX="0dp">
+
+            <EditText
+                android:id="@+id/inputcode"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_weight="2"
+                android:baselineAligned="false"
+                android:hint="@string/prompt_code"
+                android:imeActionId="6"
+                android:imeActionLabel="@string/action_sign_in_short"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:minHeight="48dp"
+                android:singleLine="true" />
+
+            <Button
+                android:id="@+id/sendcode_button"
+                android:layout_width="wrap_content"
+                android:layout_height="53dp"
+                android:layout_weight="1"
+                android:text="@string/action_send" />
+
+        </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>
 </LinearLayout>
