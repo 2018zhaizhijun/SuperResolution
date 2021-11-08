@@ -52,14 +52,15 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         History_card card = hCardList.get(position);
         holder.cardDate.setText(card.getDate());
-        Glide.with(hContext).load(card.getOld_image_url()).into(holder.oldView);
-        Glide.with(hContext).load(card.getNew_image_url()).into(holder.newView);
+        Glide.with(hContext).load(card.getOld_image_url()).thumbnail(0.1f).into(holder.oldView);
+        Glide.with(hContext).load(card.getNew_image_url()).thumbnail(0.1f).into(holder.newView);
 //        holder.oldView.setImageURI(card.getOld_image_url());
 //        holder.newView.setImageURI(card.getNew_image_url());
     }
 
     @Override
     public int getItemCount() {
+        if(hCardList==null) return 0;
         return hCardList.size();
     }
 }

@@ -39,7 +39,7 @@ private FragmentHomeBinding binding;
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()){
                     case R.id.history:
-                        Intent intent1 = new Intent(getContext(), HistoryActivity.class);
+                        Intent intent1 = new Intent(getActivity(), HistoryActivity.class);
                         startActivity(intent1);
                         //Toast.makeText(getContext(), "You clicked history button", Toast.LENGTH_LONG).show();
                         break;
