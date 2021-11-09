@@ -34,4 +34,5 @@
     <string name="my_history">我的历史</string>
     <string name="vip">会员中心</string>
     <string name="get_vip">立即开通VIP</string>
+    <string name="renew_vip">续费会员</string>
 </resources>
