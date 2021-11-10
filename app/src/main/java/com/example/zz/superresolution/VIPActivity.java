@@ -33,7 +33,7 @@ public class VIPActivity extends AppCompatActivity {
     final String[] months = new String[]{"1","3","6","12"};
     int index;
     Button vip_btn;
-    boolean flag;
+    boolean vip_flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,21 @@ public class VIPActivity extends AppCompatActivity {
         }
 
         vip_btn = (Button) findViewById(R.id.vip_btn);
+
+        try {
+            get_vip();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        if(vip_flag) {
+            Log.d("vip","是会员");
+            vip_btn.setText(R.string.renew_vip);
+        }
+        else {
+            Log.d("vip","非会员");
+            vip_btn.setText(R.string.get_vip);
+        }
         vip_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -84,10 +99,59 @@ public class VIPActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean submit_vip(){
+    private void get_vip() throws InterruptedException {
+        vip_flag = false;
+        OkHttpClient client = new OkHttpClient();
+        String token = getToken();
+        Request request = new Request.Builder() //查询会员信息
+                .url("http://101.35.24.184:9008/vip")
+                .header("Cookie", "token="+token)
+                .get()
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("vip", "onFailure: ");
+                e.printStackTrace();
+                showResult("查询会员信息失败");
+            }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String vip_type = "0";
+                Log.d("vip", "onResponse: ");
+                int code = response.code();
+                String responseStr = response.body().string();
+                Log.d("vip", "responseStr: " + responseStr);
+                if(code == HttpURLConnection.HTTP_OK){
+                    try{
+                        JSONObject jsonObject = new JSONObject(responseStr).getJSONObject("data");
+                        Log.d("vip", jsonObject.toString());
+                        vip_type = jsonObject.getString("type");
+                        Log.d("vip",vip_type);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        Log.d("vip", "error");
+                    }
+                    Log.d("vip","查询会员信息成功");
+                }
+                else{
+                    Log.d("vip", "vip failed");
+                    showResult("查询会员信息失败");
+                }
+                if(vip_type.equals("1")) {
+                    vip_flag=true;
+                    Log.d("vip","yes"+String.valueOf(vip_flag));
+                }
+            }
+        });
+        Thread.sleep(100);
+        Log.d("vip","return "+String.valueOf(vip_flag));
+    }
+
+    private void submit_vip(){
         String url = base_url+"?month="+months[index];
         Log.d("vip",url);
-        flag = false;
 
         OkHttpClient client = new OkHttpClient();
         String token = getToken();
@@ -118,7 +182,6 @@ public class VIPActivity extends AppCompatActivity {
                 Log.d("vip", "responseStr: " + responseStr);
                 if(code == HttpURLConnection.HTTP_OK){
                     showResult("开通成功");
-                    flag = true;
                 }
                 else{
                     Log.d("vip", "vip failed");
@@ -126,7 +189,6 @@ public class VIPActivity extends AppCompatActivity {
                 }
             }
         });
-        return flag;
     }
 
     public void showResult(final String msg) {
