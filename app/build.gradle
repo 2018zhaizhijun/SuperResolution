@@ -31,6 +31,8 @@ MobSDK {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
+    //支付宝支付
+    implementation files('libs/alipaysdk-15.8.05.211018174351.aar')
     implementation 'com.android.support.constraint:constraint-layout:2.0.4'
     implementation 'com.android.support:support-annotations:28.0.0'
     implementation 'com.android.support:support-vector-drawable:28.0.0'
@@ -44,6 +46,8 @@ dependencies {
     implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'com.github.bumptech.glide:okhttp3-integration:4.0.0-RC1'
+    // 支付宝 SDK AAR 包所需的配置
+//    compile (name: 'alipaysdk-15.8.05.211018174351', ext: 'aar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

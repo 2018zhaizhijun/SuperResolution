@@ -3,6 +3,7 @@ package com.example.zz.superresolution;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 //import android.support.v7.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.example.zz.superresolution.alipay.AlipayOfSandbox;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +34,7 @@ public class VIPActivity extends AppCompatActivity {
     String base_url = "http://101.35.24.184:9008/vip/open";
     final String PREFS_NAME = "userinfo";
     final String[] months = new String[]{"1","3","6","12"};
+    final String[] prices = new String[]{"10","28","58","98"};
     int index;
     Button vip_btn;
     boolean vip_flag;
@@ -76,6 +80,11 @@ public class VIPActivity extends AppCompatActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), AlipayOfSandbox.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("totalprice",prices[index]);
+                                intent.putExtras(bundle);
+                                startActivityForResult(intent,116);
 //                                pay();
                                 submit_vip();
 //                                    vip_btn.setText(R.string.renew_vip);
