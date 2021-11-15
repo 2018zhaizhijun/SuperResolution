@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -37,7 +38,7 @@ public class VIPActivity extends AppCompatActivity {
     final String[] prices = new String[]{"10","28","58","98"};
     int index;
     Button vip_btn;
-    boolean vip_flag;
+    boolean vip_flag,pay_flag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,13 +81,18 @@ public class VIPActivity extends AppCompatActivity {
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {//添加"Yes"按钮
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(), AlipayOfSandbox.class);
-                                Bundle bundle = new Bundle();
-                                bundle.putString("totalprice",prices[index]);
-                                intent.putExtras(bundle);
-                                startActivityForResult(intent,116);
-//                                pay();
-                                submit_vip();
+                                pay();
+//                                try {
+//                                    Thread.sleep(2000);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                if(pay_flag){
+//                                    submit_vip();
+//                                    Log.d("vip",pay_flag + "in if, ok.");
+//                                }
+//                                submit_vip();
+//                                Log.d("vip",pay_flag + "out if, ok.");
 //                                    vip_btn.setText(R.string.renew_vip);
 //                                Toast.makeText(getApplicationContext(), "这是确定按钮", Toast.LENGTH_SHORT).show();
                             }
@@ -95,7 +101,7 @@ public class VIPActivity extends AppCompatActivity {
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {//添加取消
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Toast.makeText(getApplicationContext(), "取消开通，您将无法享受会员尊享特权。", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "取消开通，您将无法享受会员尊享特权。", Toast.LENGTH_LONG).show();
                             }
                         })
                         .create();
@@ -104,8 +110,30 @@ public class VIPActivity extends AppCompatActivity {
         });
     }
 
-    private boolean pay(){
-        return true;
+    private void pay(){
+        Intent intent = new Intent(getApplicationContext(), AlipayOfSandbox.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("totalprice",prices[index]);
+        intent.putExtras(bundle);
+        startActivityForResult(intent,116);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 116){
+            if(resultCode == 1){
+//                pay_flag = true;
+                Log.d("vip","pay success yeah");
+                submit_vip();
+                Log.d("vip","in if, ok.");
+            }
+            else{
+//                pay_flag = false;
+                Log.d("vip","pay not success");
+            }
+        }
+
     }
 
     private void get_vip() throws InterruptedException {
@@ -154,7 +182,7 @@ public class VIPActivity extends AppCompatActivity {
                 }
             }
         });
-        Thread.sleep(100);
+        Thread.sleep(500);
         Log.d("vip","return "+String.valueOf(vip_flag));
     }
 
@@ -190,7 +218,36 @@ public class VIPActivity extends AppCompatActivity {
                 String responseStr = response.body().string();
                 Log.d("vip", "responseStr: " + responseStr);
                 if(code == HttpURLConnection.HTTP_OK){
-                    showResult("开通成功");
+//                    Toast.makeText(VIPActivity.this,"开通成功", Toast.LENGTH_LONG).show();
+//                    showResult("开通成功");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            AlertDialog alertDialog1 = new AlertDialog.Builder(VIPActivity.this)
+                                .setTitle("开通会员")
+                                .setMessage("开通会员成功!")
+                                .setIcon(R.drawable.vip)
+                                .setPositiveButton("好的", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                })
+                                .create();
+                            alertDialog1.show();
+                        }
+                    });
+//                    AlertDialog alertDialog1 = new AlertDialog.Builder(getApplicationContext())
+//                            .setTitle("开通会员")
+//                            .setMessage("开通成功!")
+//                            .setIcon(R.drawable.vip)
+//                            .setPositiveButton("好的", new DialogInterface.OnClickListener() {//添加"Yes"按钮
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                }
+//                            })
+//                            .create();
+//                    alertDialog1.show();
                 }
                 else{
                     Log.d("vip", "vip failed");

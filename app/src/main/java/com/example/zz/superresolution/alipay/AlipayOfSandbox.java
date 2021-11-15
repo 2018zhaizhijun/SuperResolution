@@ -13,9 +13,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -72,6 +74,8 @@ public class AlipayOfSandbox extends AppCompatActivity {
 	private static final int SDK_PAY_FLAG = 1;
 	private static final int SDK_AUTH_FLAG = 2;
 
+	private String price;
+
 	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
 		@SuppressWarnings("unused")
@@ -95,7 +99,7 @@ public class AlipayOfSandbox extends AppCompatActivity {
 					bundle.putString("payResult",resultInfo);
 					bundle.putString("resultStatus",resultStatus);
 					intent.putExtras(bundle);
-					setResult(116,intent);
+					setResult(1,intent);
 					finish();
 				} else {
 					// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
@@ -131,6 +135,9 @@ public class AlipayOfSandbox extends AppCompatActivity {
 		EnvUtils.setEnv(EnvUtils.EnvEnum.SANDBOX);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.pay_main);
+
+		Bundle bundle = getIntent().getExtras();
+		price = bundle.getString("totalprice");
 	}
 
 	/**
@@ -150,7 +157,7 @@ public class AlipayOfSandbox extends AppCompatActivity {
 		 * orderInfo 的获取必须来自服务端；
 		 */
         boolean rsa2 = (RSA2_PRIVATE.length() > 0);
-		Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, rsa2);
+		Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(APPID, rsa2, price);
 		String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
 
 		String privateKey = rsa2 ? RSA2_PRIVATE : RSA_PRIVATE;
@@ -235,6 +242,7 @@ public class AlipayOfSandbox extends AppCompatActivity {
 	/**
 	 * 将 H5 网页版支付转换成支付宝 App 支付的示例
 	 */
+	@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 	public void h5Pay(View v) {
 		WebView.setWebContentsDebuggingEnabled(true);
 		Intent intent = new Intent(this, H5PayDemoActivity.class);
