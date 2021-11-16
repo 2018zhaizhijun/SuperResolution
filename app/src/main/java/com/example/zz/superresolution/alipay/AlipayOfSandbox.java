@@ -74,7 +74,7 @@ public class AlipayOfSandbox extends AppCompatActivity {
 	private static final int SDK_PAY_FLAG = 1;
 	private static final int SDK_AUTH_FLAG = 2;
 
-	private String price;
+	private String price = "0.01";
 
 	@SuppressLint("HandlerLeak")
 	private Handler mHandler = new Handler() {
@@ -104,6 +104,9 @@ public class AlipayOfSandbox extends AppCompatActivity {
 				} else {
 					// 该笔订单真实的支付结果，需要依赖服务端的异步通知。
 					showAlert(AlipayOfSandbox.this, getString(R.string.pay_failed) + payResult);
+					Intent intent = new Intent();
+					setResult(2,intent);
+					finish();
 				}
 				break;
 			}

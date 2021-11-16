@@ -40,7 +40,7 @@ public class H5PayDemoActivity extends Activity {
 			finish();
 			return;
 		}
-		String url = null;
+		String url = "https://mclient.alipay.com/h5Continue.htm?h5_route_token=303ff0894cd4dccf591b089761dexxxx";
 		try {
 			url = extras.getString("url");
 		} catch (Exception e) {
