@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -64,8 +65,8 @@ public class UploadFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Button takePhoto = (Button) root.findViewById(R.id.take_photo);
-        Button selectPhoto = (Button) root.findViewById(R.id.select_photo);
+        ImageButton takePhoto = root.findViewById(R.id.take_photo);
+        ImageButton selectPhoto = root.findViewById(R.id.select_photo);
 
         takePhoto.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -31,6 +31,7 @@
     <string name="item_wallet">我的钱包</string>
     <string name="item_settings">设置</string>
     <string name="item_service">反馈</string>
+    <string name="item_logout">退出登录</string>
     <string name="my_history">我的历史</string>
     <string name="vip">会员中心</string>
     <string name="get_vip">立即开通VIP</string>

@@ -29,4 +29,11 @@
             android:title="@string/item_service"/>
     </group>
 
+<!--    <group android:id="@+id/mmg3" android:checkableBehavior="single">-->
+<!--        <item-->
+<!--            android:id="@+id/logout"-->
+<!--            android:title="@string/item_logout"/>-->
+
+<!--    </group>-->
+
 </menu>

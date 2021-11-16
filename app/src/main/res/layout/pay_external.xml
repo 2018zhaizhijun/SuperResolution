@@ -7,15 +7,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-   
+
         <Button
             android:id="@+id/payV2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:onClick="payV2"
-            android:textAllCaps="false"
-            android:text="@string/pay_with_alipay" />
+            android:text="@string/pay_with_alipay"
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/authV2"
