@@ -74,6 +74,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    final String PREFS_NAME = "userinfo";
 
 //    private static final String[] DUMMY_CREDENTIALS = new String[]{
 //            "18607339539", "011520"
@@ -96,6 +97,12 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if(getToken().length()>2){
+            startActivity(new Intent(LoginActivity.this,NavigationActivity.class));
+            finish();
+        }
+
         // Set up the login form.
         mTelephoneView = (AutoCompleteTextView) findViewById(R.id.telephone);
         populateAutoComplete();
@@ -138,6 +145,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private String getToken(){
+        SharedPreferences userInfo = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        String token = userInfo.getString("token", "");
+        Log.i("token", token);
+        return token;
     }
 
     private boolean judgePhoneNums(String phoneNums) {

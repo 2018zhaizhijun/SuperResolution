@@ -58,6 +58,9 @@
             android:exported="true"
             android:label="@string/result_title"/>
         <activity
+            android:name=".VideoResultActivity"
+            android:exported="true" />
+        <activity
             android:name=".NavigationActivity"
             android:exported="true"
             android:label="@string/title_activity_navigation" /> <!-- android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"> -->
