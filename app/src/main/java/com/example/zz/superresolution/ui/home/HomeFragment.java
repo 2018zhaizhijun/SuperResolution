@@ -1,5 +1,7 @@
 package com.example.zz.superresolution.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -136,6 +138,7 @@ public class HomeFragment extends Fragment {
 //                        e.printStackTrace();
 //                        Log.d("wallet", "error");
 //                    }
+                    deleteToken();
                     Log.d("logout","退出登录成功");
                     Intent intent = new Intent(getActivity(), LoginActivity.class);
                     startActivity(intent);
@@ -161,10 +164,20 @@ public class HomeFragment extends Fragment {
     }
 
     private String getToken(){
-        SharedPreferences userInfo = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        SharedPreferences userInfo = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         String token = userInfo.getString("token", "");
         Log.i("token", token);
         return token;
+    }
+
+    private void deleteToken(){
+        SharedPreferences userInfo = getActivity().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = userInfo.edit();//获取Editor
+        //得到Editor后，写入需要保存的数据
+        editor.remove("token");
+//        editor.putString("token", token);
+        editor.commit();//提交修改
+        Log.i("logout", "token deleted");
     }
 
 @Override

@@ -80,7 +80,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="$USER_HOME$/Downloads/数据.png" />
+                                                <entry key="imagePath" value="$USER_HOME$/Downloads/sr.png" />
+                                                <entry key="scalingPercent" value="133" />
                                                 <entry key="trimmed" value="true" />
                                               </map>
                                             </option>
@@ -113,8 +114,11 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="ic_history" />
-                                      <entry key="previewDensity" value="XXXHIGH" />
+                                      <entry key="backgroundAssetType" value="COLOR" />
+                                      <entry key="backgroundColor" value="ffffff" />
+                                      <entry key="foregroundLayerName" value="ic_launcher_f" />
+                                      <entry key="outputName" value="ic_launcher_app" />
+                                      <entry key="previewDensity" value="HIGH" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -282,7 +286,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="previewDensity" value="XXXHIGH" />
+                                      <entry key="previewDensity" value="HIGH" />
                                     </map>
                                   </option>
                                 </PersistentState>
