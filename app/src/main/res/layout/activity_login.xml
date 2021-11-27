@@ -80,6 +80,18 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="35dp" />
 
+
+<!--        <de.hdodenhof.circleimageview.CircleImageView-->
+<!--            android:id="@+id/user_image"-->
+<!--            android:layout_width="159dp"-->
+<!--            android:layout_height="152dp"-->
+<!--            android:layout_marginTop="87dp"-->
+<!--            android:src="@drawable/login"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
+
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="159dp"

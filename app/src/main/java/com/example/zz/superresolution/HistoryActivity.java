@@ -58,7 +58,11 @@ public class HistoryActivity extends AppCompatActivity {
         }
         Glide.get(this).clearMemory();//clear memory
         cardList.clear();
-        getHist();
+        try {
+            getHist();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 //        initCards();
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.history_rv);
@@ -67,6 +71,7 @@ public class HistoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
         adapter = new CardAdapter(cardList);
         recyclerView.setAdapter(adapter);
+
     }
 
 //    private void initCards(){
@@ -76,7 +81,7 @@ public class HistoryActivity extends AppCompatActivity {
 //        }
 //    }
 
-    private void getHist(){
+    private void getHist() throws InterruptedException {
         long page = 1;
         int pageSize = 10;
         String url = base_url+"?page="+page+"&pageSize="+pageSize;
@@ -144,14 +149,14 @@ public class HistoryActivity extends AppCompatActivity {
 //                            cards[i]=card;
 //                            Log.d("history",card.toString());
                         }
-
+//                        Thread.sleep(10000);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.d("history", "error");
                     }
 
-                    showResult("获取历史记录成功");
+//                    showResult("获取历史记录成功");
                 }
                 else{
                     Log.d("history", "history failed");
@@ -159,6 +164,8 @@ public class HistoryActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Thread.sleep(1000);
     }
 
     public void showResult(final String msg) {
